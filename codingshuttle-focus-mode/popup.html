@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CodingShuttle Focus Mode</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:       #0f172a;
+      --surface:  #1e293b;
+      --border:   #334155;
+      --muted:    #475569;
+      --text:     #e2e8f0;
+      --sub:      #94a3b8;
+      --accent:   #ED155A;
+      --green:    #22c55e;
+      --radius:   10px;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      font-size: 13px;
+      width: 300px;
+      padding: 16px;
+      user-select: none;
+    }
+
+    /* ── Header ── */
+    .header {
+      display: flex; align-items: center; gap: 10px;
+      margin-bottom: 14px;
+    }
+    .logo {
+      width: 34px; height: 34px; border-radius: 8px;
+      background: linear-gradient(135deg, #ED155A, #a60a39);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 17px; flex-shrink: 0;
+    }
+    .brand-name  { font-size: 13px; font-weight: 700; color: #f8fafc; }
+    .brand-sub   { font-size: 11px; color: var(--muted); margin-top: 1px; }
+
+    /* ── Sections ── */
+    .section-label {
+      font-size: 9px; font-weight: 700; letter-spacing: .1em;
+      text-transform: uppercase; color: var(--muted);
+      margin: 12px 0 6px;
+    }
+
+    /* ── Card ── */
+    .card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); overflow: hidden;
+    }
+    .card-row {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--border);
+    }
+    .card-row:last-child { border-bottom: none; }
+
+    .row-label   { font-size: 13px; font-weight: 600; color: var(--text); }
+    .row-sub     { font-size: 11px; color: var(--muted); margin-top: 2px; }
+
+    /* ── Toggle switch ── */
+    .switch { position:relative; width:42px; height:24px; flex-shrink:0; }
+    .switch input { opacity:0; width:0; height:0; }
+    .slider {
+      position:absolute; inset:0; background:var(--border);
+      border-radius:24px; cursor:pointer;
+      transition:background .25s ease;
+    }
+    .slider::before {
+      content:''; position:absolute;
+      width:18px; height:18px; left:3px; top:3px;
+      background:var(--sub); border-radius:50%;
+      transition:transform .25s ease, background .25s ease;
+    }
+    input:checked + .slider             { background:var(--accent); }
+    input:checked + .slider::before     { transform:translateX(18px); background:#fff; }
+
+    /* ── Pomodoro row ── */
+    .pomo-row {
+      display:flex; align-items:center; justify-content:space-between;
+      padding:10px 12px;
+    }
+    #pomo-display {
+      font-size:20px; font-weight:700; letter-spacing:.04em;
+      color:#f8fafc; font-variant-numeric:tabular-nums;
+      min-width:52px; text-align:center;
+    }
+    .pomo-ctrl { display:flex; gap:6px; align-items:center; }
+    .pomo-btn {
+      background:var(--accent); color:#fff; border:none;
+      border-radius:7px; padding:4px 12px; font-size:12px;
+      font-weight:600; cursor:pointer; transition:background .15s;
+    }
+    .pomo-btn:hover   { background:#c4114a; }
+    .pomo-btn.outline {
+      background:var(--border); color:var(--sub); font-size:14px; padding:4px 8px;
+    }
+    .pomo-btn.outline:hover { background:#3e5068; }
+
+    /* ── Stats ── */
+    .stats-grid {
+      display:grid; grid-template-columns:1fr 1fr;
+      gap:1px; background:var(--border); border-radius:var(--radius); overflow:hidden;
+    }
+    .stat-cell {
+      background:var(--surface); padding:10px 12px;
+      display:flex; flex-direction:column; gap:3px;
+    }
+    .stat-val  { font-size:20px; font-weight:700; color:var(--text); }
+    .stat-lbl  { font-size:10px; color:var(--muted); }
+
+    /* ── Status bar ── */
+    .status-bar {
+      display:flex; align-items:center; justify-content:center;
+      gap:6px; font-size:11px; color:var(--muted); margin-top:12px;
+    }
+    .status-dot {
+      width:7px; height:7px; border-radius:50%;
+      background:var(--green); box-shadow:0 0 5px #22c55e88;
+      flex-shrink:0; transition:background .2s;
+    }
+    .status-dot.off { background:var(--muted); box-shadow:none; }
+
+    /* ── Divider ── */
+    hr { border:none; border-top:1px solid var(--border); margin:12px 0; }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <div class="header">
+    <div class="logo">🎯</div>
+    <div>
+      <div class="brand-name">Focus Mode</div>
+      <div class="brand-sub">codingshuttle.com</div>
+    </div>
+  </div>
+
+  <!-- Core toggles -->
+  <div class="section-label">Core</div>
+  <div class="card">
+    <div class="card-row">
+      <div>
+        <div class="row-label">Focus Mode</div>
+        <div class="row-sub">Hide ads, nav &amp; promo cards</div>
+      </div>
+      <label class="switch">
+        <input type="checkbox" id="tog-focus" checked />
+        <span class="slider"></span>
+      </label>
+    </div>
+    <div class="card-row">
+      <div>
+        <div class="row-label">Spotlight Mode</div>
+        <div class="row-sub">Dim all but hovered paragraph</div>
+      </div>
+      <label class="switch">
+        <input type="checkbox" id="tog-spotlight" />
+        <span class="slider"></span>
+      </label>
+    </div>
+  </div>
+
+  <!-- Pomodoro -->
+  <div class="section-label">Pomodoro Timer</div>
+  <div class="card">
+    <div class="pomo-row">
+      <div>
+        <div class="row-label">🍅 25-min focus</div>
+        <div class="row-sub" id="pomo-status">Ready to start</div>
+      </div>
+      <div id="pomo-display">25:00</div>
+    </div>
+    <div class="card-row" style="border-top:1px solid var(--border);">
+      <label class="switch">
+        <input type="checkbox" id="tog-pomodoro" />
+        <span class="slider"></span>
+      </label>
+      <div class="pomo-ctrl">
+        <button class="pomo-btn outline" id="pomo-reset">↺</button>
+        <button class="pomo-btn" id="pomo-play">▶ Start</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Stats -->
+  <div class="section-label">This page</div>
+  <div class="stats-grid">
+    <div class="stat-cell">
+      <div class="stat-val" id="stat-hl">—</div>
+      <div class="stat-lbl">🎨 Highlights</div>
+    </div>
+    <div class="stat-cell">
+      <div class="stat-val" id="stat-notes">—</div>
+      <div class="stat-lbl">📝 Notes</div>
+    </div>
+    <div class="stat-cell">
+      <div class="stat-val" id="stat-done">—</div>
+      <div class="stat-lbl">✅ Pages done</div>
+    </div>
+    <div class="stat-cell">
+      <div class="stat-val" id="stat-page">—</div>
+      <div class="stat-lbl">📄 This page</div>
+    </div>
+  </div>
+
+  <!-- Status -->
+  <div class="status-bar">
+    <span class="status-dot" id="status-dot"></span>
+    <span id="status-text">Focus mode is active</span>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
